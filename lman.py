@@ -37,6 +37,9 @@ STARTING_COLUMN = 2
 NAMES_RANGE = 'Mythic Loot!B8:B'
 
 
+BIG_UPGRADE_THRESHOLD = 0.5
+SMALL_UPGRADE_THRESHOLD = 0
+
 class Item:
     """This class represents an item from an encounter.
 
@@ -91,13 +94,13 @@ class LootCell:
         for item in self.items:
             upgrade_percent = (item.dps_mean / self.base_dps) - 1
             upgrade_percent = upgrade_percent * 100
-            self.note += '{:40s} {: 5.0f} ({: 3.0f}%)\n'.format(item.item_slot,
+            self.note += '{:20s} {:=+4.0f} ({:+3.0f}%)\n'.format(item.item_slot,
                                                                 item.dps_mean - self.base_dps, upgrade_percent)
             if upgrade_percent > self.max_upgrade:
                 self.max_upgrade = upgrade_percent
-        if self.max_upgrade > 1.0:
+        if self.max_upgrade > BIG_UPGRADE_THRESHOLD:
             self.upgrade_level = 'B'
-        elif self.max_upgrade > 0:
+        elif self.max_upgrade > SMALL_UPGRADE_THRESHOLD:
             self.upgrade_level = 'S'
 
 
