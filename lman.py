@@ -29,7 +29,12 @@ encounter_ids = {2458: 'Guardian',
                  -24: 'Trash'}
 
 
-def process_results(results_link):
+# Order in the lootsheet:
+#              GUARDIAN	DAUSEGNE PANTHEON LIHUVIM SKOLEX XY'MOX HALONDRUS ANDUIN DREADLORDS RYGELON JAILER
+ordered_ids = [2458,    2459,    2460,    2461,   2465,  2470,  2463,     2469,  2457,      2467,   2464]
+
+
+def process_results(results_link_raw):
     '''
     Turns the response from raidbots into human readable data
     An example response looks like this:
@@ -53,9 +58,11 @@ def process_results(results_link):
     :param results_link: The link to raidbots.com. Can be either in the form of https://www.raidbots.com/simbot/report/<id> or https://www.raidbots.com/reports/<id>/data.csv. In case of the latter, the link will be converted to the former.
     '''
     # Get the data from raidbots
-    if not results_link.endswith('.csv'):
-        id = results_link.split('/')[-1]
+    if not results_link_raw.endswith('.csv'):
+        id = results_link_raw.split('/')[-1]
         results_link = 'https://www.raidbots.com/reports/' + id + '/data.csv'
+    else:
+        results_link = results_link_raw
 
     req = request.Request(
         results_link,
@@ -87,10 +94,12 @@ def process_results(results_link):
             upgrades[encounter_id] = upgrade_potential
 
     output = ""
+    # sort upgrades according to ordered_ids
     # print all upgrades
-    for encounter_id, upgrade_potential in upgrades.items():
+    for encounter_id in ordered_ids:
         if encounter_id == -24:
             continue
+        upgrade_potential = upgrades[encounter_id]
         upgrade_ratio = upgrade_potential / player_dps
         if upgrade_ratio < 0.01 and upgrade_ratio > 0:
             output += 'S'
@@ -99,7 +108,8 @@ def process_results(results_link):
         else:
             output += ''
         output += u'\u0009'
-    output += results_link
+    output += results_link_raw
+    print('GUARDIAN DAUSEGNE PANTHEON LIHUVIM SKOLEX XY\'MOX HALONDRUS ANDUIN DREADLORDS RYGELON JAILER')
     print(output)
     pyperclip.copy(output)
     return output
