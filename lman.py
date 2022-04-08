@@ -264,8 +264,8 @@ def auth():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+            flow = InstalledAppFlow.from_client_config(
+                {"installed": {"client_id": "873560391671-if0uksd4glptfdmc978lhg9uices4i7v.apps.googleusercontent.com", "project_id": "lman-346610", "auth_uri": "https://accounts.google.com/o/oauth2/auth", "token_uri": "https://oauth2.googleapis.com/token", "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs", "client_secret": "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", "redirect_uris": ["http://localhost"]}}, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
